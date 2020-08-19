@@ -63,7 +63,7 @@ def binary_insert_sort(to_sort: list):
 # 2.3 直接插入排序
 # 为适配希尔排序直接调用,抽象起始点与间隔指定
 # 默认参数即为直接插入排序
-def shell_insert_sort_(to_sort: list, start=0, gap=1):
+def insert_sort_by_indexes(to_sort: list, start=0, gap=1):
     if len(to_sort) >= 2:
         # 默认首位为左侧有序列首位
         # 遍历列表
@@ -77,24 +77,58 @@ def shell_insert_sort_(to_sort: list, start=0, gap=1):
 
 
 # 2.4 希尔排序/缩小间隔插入排序
-# 增量序列为二除
 def shell_insert_sort(to_sort: list, mode: str = "normal"):
     if len(to_sort) >= 2:
         # 三种增量序列
-        if mode.lower() in ["normal", "hibbard", "sedgewick"]:
-            if mode == "normal":
-                gap = len(to_sort) // 2
-                # 完成一趟交换,缩小间隔,地板除2,直到完成gap=1的最后一趟插入排序
-                while gap:
+        mode = mode.lower()
+        if mode in ["normal", "hibbard", "sedgewick"]:
+            if mode == "sedgewick":
+                gaps = []
+                # TODO
+                # while
+                gaps.reverse()
+                # 完成一趟交换,缩小间隔,地板除2,直到完成gap=1的最后一趟直接插入排序
+                for gap in gaps:
                     # gap为n时,则存在n组列表,列表起点为0~(n-1)
                     for start in range(gap):
                         # 执行插入排序
-                        shell_insert_sort_(to_sort, start=start, gap=gap)
-                    gap //= 2
-            else:
-                # TODO
-                pass
+                        insert_sort_by_indexes(to_sort, start=start, gap=gap)
+            if mode == "normal":
+                gap = len(to_sort) // 2
+            elif mode == "hibbard":
+                gap = 1
+                while gap * 2 < len(to_sort):
+                    gap *= 2
+                gap = gap - 1
+            # 完成一趟交换,缩小间隔,地板除2,直到完成gap=1的最后一趟直接插入排序
+            while gap:
+                # gap为n时,则存在n组列表,列表起点为0~(n-1)
+                for start in range(gap):
+                    # 执行插入排序
+                    insert_sort_by_indexes(to_sort, start=start, gap=gap)
+                gap //= 2
+
+        else:
+            raise Exception("""Mode is not in ["normal", "hibbard", "sedgewick"].""")
     return to_sort
+
+
+def sedgewick_array(n):
+    i = 0
+    j = 0
+    while n:
+        a = 9 * (4 ** i) - 9 * (2 ** i) + 1
+        b = 4 ** j - 3 * (2 ** j ) + 1
+        if a == 1:
+            yield a
+            i += 1
+        elif a > b:
+            i += 1
+            yield a
+        else:
+            j += 1
+            yield b
+        n -= 1
 
 
 # 3.选择排序
