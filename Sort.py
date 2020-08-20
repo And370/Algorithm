@@ -2,6 +2,8 @@
 # author:And370
 # time:2020/8/15
 
+import random
+
 
 def swap(to_exchange, i, j):
     to_exchange[i], to_exchange[j] = to_exchange[j], to_exchange[i]
@@ -60,7 +62,7 @@ def binary_insert_sort(to_sort: list):
     return to_sort
 
 
-# 2.3 直接插入排序
+# 2.3 直接插入排序-抽象
 # 为适配希尔排序直接调用,抽象起始点与间隔指定
 # 默认参数即为直接插入排序
 def insert_sort_by_indexes(to_sort: list, start=0, gap=1):
@@ -83,9 +85,13 @@ def shell_insert_sort(to_sort: list, mode: str = "normal"):
         mode = mode.lower()
         if mode in ["normal", "hibbard", "sedgewick"]:
             if mode == "sedgewick":
+                # 生成sedgewick增量序列
                 gaps = []
-                # TODO
-                # while
+                for gap in sedgewick_array():
+                    if gap < len(to_sort):
+                        gaps.append(gap)
+                    else:
+                        break
                 gaps.reverse()
                 # 完成一趟交换,缩小间隔,地板除2,直到完成gap=1的最后一趟直接插入排序
                 for gap in gaps:
@@ -93,6 +99,8 @@ def shell_insert_sort(to_sort: list, mode: str = "normal"):
                     for start in range(gap):
                         # 执行插入排序
                         insert_sort_by_indexes(to_sort, start=start, gap=gap)
+                return to_sort
+            # 以下二者的增量共用迭代逻辑生成
             if mode == "normal":
                 gap = len(to_sort) // 2
             elif mode == "hibbard":
@@ -107,28 +115,17 @@ def shell_insert_sort(to_sort: list, mode: str = "normal"):
                     # 执行插入排序
                     insert_sort_by_indexes(to_sort, start=start, gap=gap)
                 gap //= 2
-
         else:
             raise Exception("""Mode is not in ["normal", "hibbard", "sedgewick"].""")
     return to_sort
 
 
-def sedgewick_array(n):
+def sedgewick_array():
     i = 0
-    j = 0
-    while n:
-        a = 9 * (4 ** i) - 9 * (2 ** i) + 1
-        b = 4 ** j - 3 * (2 ** j ) + 1
-        if a == 1:
-            yield a
-            i += 1
-        elif a > b:
-            i += 1
-            yield a
-        else:
-            j += 1
-            yield b
-        n -= 1
+    while True:
+        yield 9 * (4 ** i) - 9 * (2 ** i) + 1
+        yield 4 ** (i + 2) - 3 * (2 ** (i + 2)) + 1
+        i += 1
 
 
 # 3.选择排序
@@ -156,11 +153,13 @@ def merge_sort(to_sort: list):
     return to_sort
 
 
+# 分组
 def partition(to_part: list):
     index = int(len(to_part) / 2)
     return to_part[index:], to_part[:index]
 
 
+# 二归并一
 def concat_sort(list1: list, list2: list):
     i, j = 0, 0
     len_1, len_2 = len(list1), len(list2)
@@ -175,3 +174,22 @@ def concat_sort(list1: list, list2: list):
     result += list1[i:]
     result += list2[j:]
     return result
+
+
+# 快速排序
+def quick_sort(to_sort: list):
+    length = len(to_sort)
+    pivot = random.randrange(0, length)
+    left, right = 0, length - 1
+    while left != right:
+        print(to_sort)
+        print(left, right, pivot)
+        print(to_sort[left], to_sort[right], to_sort[pivot])
+        while to_sort[left] <= to_sort[pivot] and left != right:
+            left += 1
+        while to_sort[right] >= to_sort[pivot] and left != right:
+            right -= 1
+        swap(to_sort, left, right)
+    swap(to_sort, left, pivot)
+    to_sort[:left], to_sort[left:] = quick_sort(to_sort[:left]), quick_sort(to_sort[left:])
+    return to_sort
