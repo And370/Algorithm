@@ -5,8 +5,10 @@
 """
 
 import numpy as np
-from itertools import product
+import random
+from itertools import accumulate
 from fractions import Fraction
+
 """
 先考虑三维空间正方形的情况
 
@@ -61,53 +63,115 @@ E(BD)=9
 It takes one step to go from A to B, so
 E(AD)=10
 
+3.蒙特卡洛模拟
+
+4.扩展到n维:
+TODO
 """
+
+
+# 3维情况
 def solution_3():
     matrix = np.array([
-        [0, 1/3, 0,   0],
-        [1, 0,   2/3, 0],
-        [0, 2/3, 0,   0],
-        [0, 0,   1/3, 0],
+        [0, 1 / 3, 0, 0],
+        [1, 0, 2 / 3, 0],
+        [0, 2 / 3, 0, 0],
+        [0, 0, 1 / 3, 0],
     ])
-    x = np.array([[1],[0],[0],[0]])
-    # print(matrix)
+    x = np.array([[1], [0], [0], [0]])
+
+    # 暴力逼近
+    # s:累计第N步首次到终点的概率
     s = 0
     for i in range(1, 200):
         x = matrix.dot(x)
-        # print(x.tolist())
-        print('P(x=' + str(i) + '): ' + str(x[3][0]),'\n')
+        print('P(x=' + str(i) + '): ' + str(x[3][0]), '\n')
         s += i * x[3][0]
         print(s)
+
 
 def solution_3_():
     a = Fraction(1)
     b = Fraction(2)
     c = Fraction(3)
     matrix = np.array([
-        [0, a/c, 0,   0],
-        [c/c, 0,   b/c, 0],
-        [0, b/c, 0,   0],
-        [0, 0,   a/c, 0],
+        [0, a / c, 0, 0],
+        [c / c, 0, b / c, 0],
+        [0, b / c, 0, 0],
+        [0, 0, a / c, 0],
     ])
-    x = np.array([[1],[0],[0],[0]])
+    x = np.array([[1], [0], [0], [0]])
     # print(matrix)
     for i in range(1, 20):
         x = matrix.dot(x)
         print('P(x=' + str(i) + '): ' + str(x[2][0]))
-        print('P(x=' + str(i) + '): ' + str(x[3][0]),'\n')
+        print('P(x=' + str(i) + '): ' + str(x[3][0]), '\n')
 
 
+# N维正方形状态转移矩阵
+def state_transition_matrix_ND(N=3):
+    """
+    生成N维的正方体移动的状态转移概率矩阵
+    :param N: N dimension
+    :return: numpy.ndarray
+    """
+    matrix = np.zeros((N + 1, N + 1))
+    for i in range(N + 1):
+        if i < N:
+            matrix[i, i + 1] = Fraction(N - i) / Fraction(N)
+        if i >= 1:
+            matrix[i, i - 1] = Fraction(i) / Fraction(N)
+    return matrix.T
 
+
+def weighted_choice(weights: list):
+    """
+    权重随机
+    :param weights: weights list
+    :return: choice index
+    """
+    rnd = random.random() * sum(weights)
+    for index, wight in enumerate(weights):
+        rnd -= wight
+        if rnd < 0:
+            return index
+
+
+def MonteCarloOnce(dimension=3):
+    """
+    单次模拟
+    :param dimension:cube dimension
+    :return: 首次到对点行走次数
+    """
+    matrix = state_transition_matrix_ND(dimension).T
+    count = 0
+    statu = 0
+    while statu != dimension:
+        statu = weighted_choice(matrix[statu])
+        count += 1
+    return count
+
+
+def MonteCarloTimes(times=10000, dimension=3):
+    """
+    多次模拟取均值
+    :param dimension:cube dimension
+    :param times: 模拟次数 
+    :return: 均值
+    """
+    n = 0
+    for i in range(1, times):
+        n += MonteCarloOnce(dimension)
+    return n / i
+
+
+# N维情况 TODO
 def solution_n(n):
-    matrix = np.zeros((n,n))
+    matrix = np.zeros((n, n))
     # for i,j in product(range(n),range(n)):
     #     matrix[i] = [1,2,3]
     for i in range(n):
-        matrix[i] = [0 if j == 1 else 0 for j in range(n) ]
-    print(matrix[1,2])
-
-
-solution_3()
-# solution_n(3)
+        matrix[i] = [0 if j == 1 else 0 for j in range(n)]
+    print(matrix[1, 2])
 
 

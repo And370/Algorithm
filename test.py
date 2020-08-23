@@ -3,7 +3,7 @@
 # time:2020/8/15
 import random
 from Sort import *
-
+from Markov import *
 
 def check(func,*args):
     to_sort = [random.randrange(1, 10000) for i in range(5)]
@@ -11,4 +11,5 @@ def check(func,*args):
 
 
 if __name__ == "__main__":
-    print(check(shell_insert_sort,"normal"))
+    for i in range(3, 7):
+        print(i, MonteCarloTimes(times=100000, dimension=i))
