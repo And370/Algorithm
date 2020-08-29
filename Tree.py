@@ -271,7 +271,24 @@ def is_complete_tree(node=None):
     :param node:
     :return:
     """
-
+    bottom_torched = False
+    queue = [node]
+    while queue:
+        current_node = queue.pop(0)
+        if not bottom_torched:
+            # 当左空右实,必然False
+            if not current_node.left and current_node.right:
+                return False
+            # 将后续节点加入队列
+            elif current_node.left and current_node.right:
+                queue.extend([current_node.left, current_node.right])
+            # 左实右空,开始触底
+            elif current_node.left and not current_node.right:
+                bottom_torched = True
+        else:
+            if current_node.left or current_node.right:
+                return False
+    return True
 
 
 def is_full_binary_tree(node=None):
@@ -331,19 +348,21 @@ if __name__ == "__main__":
     for i in range(10):
         bbt.insert(i)
 
-    funcs = [max_depth, min_depth, nodes_count, leaf_nodes_count, is_balanced, is_complete_tree]
+    funcs = [max_depth, min_depth, nodes_count, leaf_nodes_count, is_complete_tree]
     func_test(funcs, bbt.root)
 
     print(nodes_count_k_level.__name__, ":", nodes_count_k_level(bbt.root, 3))
 
-    #
-    # # 二叉搜索树
-    # bst = BinarySortTree()
-    # elements = set([random.randrange(1, 100) for i in range(8)])
-    # elements = [59, 23, 55, 56, 25, 27, 30, 63]
-    # print(elements)
-    # for i in elements:
-    #     bst.insert(i)
-    #
+
+    # 二叉搜索树
+    import random
+    bst = BinarySortTree()
+    elements = set([random.randrange(1, 100) for i in range(8)])
+    elements = [59, 23, 55, 56, 25, 27, 30, 63]
+    print(elements)
+    for i in elements:
+        bst.insert(i)
+    print(is_complete_tree(bst.root))
+
     # funcs = [pre_order_traversal, in_order_traversal, post_order_traversal, layer_traversal, layer_traversal_with_deep]
     # func_test(funcs, bst.root)
