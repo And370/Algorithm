@@ -16,6 +16,9 @@ class Node(object):
     def __str__(self):
         return str(self.element)
 
+    def __bool__(self):
+        return True if self.element != None else False
+
 
 class BaseBinaryTree(object):
     """
@@ -250,7 +253,6 @@ def layer_traversal_with_deep(node=None):
             if not queues.get(layer + 1):
                 queues[layer + 1] = []
             elements[layer].append(node.element)
-
             if node.left:
                 queues[layer + 1].append(node.left)
                 # print(queues)
@@ -267,7 +269,6 @@ def is_complete_tree(node=None):
     从左向右逐层排列紧密
     除最后一层节点未满
 
-    TODO
     :param node:
     :return:
     """
@@ -286,6 +287,7 @@ def is_complete_tree(node=None):
             elif current_node.left and not current_node.right:
                 bottom_torched = True
         else:
+            # 触底节点不应该再出现子节点：解决高差定义
             if current_node.left or current_node.right:
                 return False
     return True
@@ -298,6 +300,55 @@ def is_full_binary_tree(node=None):
     :param node:
     :return:
     """
+    # 逐层检查当前层与下一层
+    current_layer = [node]
+    next_layer = []
+    bottom_torched = False
+    result = True
+    # 两种非完全二叉树的情况:
+    # 1.非最后一层,存在空子节点
+    # 2."最后一层"存在子节点
+    while current_layer:
+        for current_node in current_layer:
+            # 非底部时
+            if not bottom_torched:
+                if current_node.left and current_node.right:
+                    next_layer.extend([current_node.left, current_node.right])
+                elif current_node.left is None and current_node.right is None:
+                    bottom_torched = True
+                else:
+                    return False
+            # 底部时
+            elif current_node.left or current_node.right:
+                return False
+        current_layer, next_layer = next_layer, []
+    return result
+
+
+def is_full_binary_tree_2(node=None):
+    """
+    满二叉树定义:
+    第K层有2**(k-1)个元素
+
+    :param node:
+    :return:
+    """
+    # 逐层检查当前层与下一层
+    current_layer = [node]
+    next_layer = []
+    k = 0
+    while current_layer:
+        for current_node in current_layer:
+            next_layer.extend([current_node.left, current_node.right])
+        k += 1
+        if set(next_layer) == {None}:
+            return True
+        elif None in next_layer:
+            return False
+        elif len(next_layer) != 2 ** k:
+            return False
+        current_layer, next_layer = next_layer, []
+    return True
 
 
 def is_binary_sort_tree(node=None):
@@ -310,9 +361,17 @@ def is_binary_sort_tree(node=None):
     :param node:
     :return:
     """
+    result = True
+    if not node:
+        return result
+    if node.left:
+        result = result and node.left.element < node.element
+    if node.right:
+        result = result and node.right.element > node.element
+    return result and is_binary_sort_tree(node.left) and is_binary_sort_tree(node.right)
 
 
-def is_balanced(node=None):
+def is_balanced_tree(node=None):
     """
     平衡二叉树定义:
     TODO
@@ -345,24 +404,26 @@ def func_test(funcs, node=None):
 if __name__ == "__main__":
     # 基础二叉树
     bbt = BaseBinaryTree()
-    for i in range(10):
+    for i in range(15):
         bbt.insert(i)
 
-    funcs = [max_depth, min_depth, nodes_count, leaf_nodes_count, is_complete_tree]
+    funcs = [layer_traversal_with_deep,
+             max_depth, min_depth, nodes_count, leaf_nodes_count,
+             is_complete_tree, is_full_binary_tree, is_full_binary_tree_2,
+             is_binary_sort_tree]
     func_test(funcs, bbt.root)
 
     print(nodes_count_k_level.__name__, ":", nodes_count_k_level(bbt.root, 3))
 
-
+    print("-" * 20)
     # 二叉搜索树
     import random
+
     bst = BinarySortTree()
     elements = set([random.randrange(1, 100) for i in range(8)])
     elements = [59, 23, 55, 56, 25, 27, 30, 63]
     print(elements)
     for i in elements:
         bst.insert(i)
-    print(is_complete_tree(bst.root))
 
-    # funcs = [pre_order_traversal, in_order_traversal, post_order_traversal, layer_traversal, layer_traversal_with_deep]
-    # func_test(funcs, bst.root)
+    func_test(funcs, bst.root)
