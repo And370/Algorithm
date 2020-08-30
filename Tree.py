@@ -246,18 +246,18 @@ def layer_traversal_with_deep(node=None):
     queues = {1: [node]}
     layer = 1
     while queues.get(layer):
-        for node in queues[layer]:
+        for current_node in queues[layer]:
             # 注意不要重复覆盖式创建
             if not elements.get(layer):
                 elements[layer] = []
             if not queues.get(layer + 1):
                 queues[layer + 1] = []
-            elements[layer].append(node.element)
-            if node.left:
-                queues[layer + 1].append(node.left)
+            elements[layer].append(current_node.element)
+            if current_node.left:
+                queues[layer + 1].append(current_node.left)
                 # print(queues)
-            if node.right:
-                queues[layer + 1].append(node.right)
+            if current_node.right:
+                queues[layer + 1].append(current_node.right)
                 # print(queues)
         layer += 1
     return elements
@@ -380,6 +380,25 @@ def is_balanced_tree(node=None):
     """
 
 
+def is_same_tree(node_a, node_b):
+    """
+    判断两棵树是否相同
+    :param node_a:
+    :param node_b:
+    :return:
+    """
+    result = True
+    # 当节点A,B存在
+    if node_a and node_b:
+        # 且不相等时,不等
+        if node_a.element != node_b.element:
+            return False
+    # 当节点A,B仅存在一者,不等
+    elif node_a or node_b:
+        return False
+    return result and is_same_tree(node_a.left, node_b.left) and is_same_tree(node_a.right, node_b.right)
+
+
 def binary_tree_visualization(node=None):
     """
     二叉树可视化
@@ -415,12 +434,12 @@ if __name__ == "__main__":
 
     print(nodes_count_k_level.__name__, ":", nodes_count_k_level(bbt.root, 3))
 
-    print("-" * 20)
+    print("-" * 50)
     # 二叉搜索树
     import random
 
     bst = BinarySortTree()
-    elements = set([random.randrange(1, 100) for i in range(8)])
+    # elements = set([random.randrange(1, 100) for i in range(8)])
     elements = [59, 23, 55, 56, 25, 27, 30, 63]
     print(elements)
     for i in elements:
