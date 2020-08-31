@@ -17,7 +17,7 @@ class Node(object):
         return str(self.element)
 
     def __bool__(self):
-        return True if self.element != None else False
+        return False if self.element is None else True
 
 
 class BaseBinaryTree(object):
@@ -94,7 +94,7 @@ class BinarySortTree(BaseBinaryTree):
                         return
                 # 重复值报错
                 else:
-                    raise ValueError("Element is repeated.")
+                    raise ValueError("Element %s is repeated." % element)
 
 
 class HuffmanTree():
@@ -424,6 +424,7 @@ if __name__ == "__main__":
     # 基础二叉树
     bbt = BaseBinaryTree()
     for i in range(15):
+        # 逐层顺序插入
         bbt.insert(i)
 
     funcs = [layer_traversal_with_deep,
