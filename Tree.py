@@ -20,6 +20,21 @@ class Node(object):
         return False if self.element is None else True
 
 
+class HuffmanNode(Node):
+    """
+    哈夫曼节点.
+    增加父节点指针与权重
+    """
+
+    def __init__(self, element, char):
+        super(HuffmanNode, self).__init__(element)
+        self.data = char
+        self.parent = None
+
+    def __repr__(self):
+        return """HuffmanNode(%s)""" % self.element
+
+
 class BaseBinaryTree(object):
     """
     基础无序二叉树.
@@ -97,12 +112,42 @@ class BinarySortTree(BaseBinaryTree):
                     raise ValueError("Element %s is repeated." % element)
 
 
-class HuffmanTree():
+class HuffmanTree(BaseBinaryTree):
     """
-    哈夫曼树
-    TODO
+    哈夫曼树/最优二叉树
+    带权路径和最小
+    大值放近，小值放远
+    * 此处设定左节点小于右节点权重
+
+    WPL = sum(Wi * Li)
+    求和(节点权重 * 路径)
+
+
+    应用价值在于可以提高信息熵
+    降低高频信息哈夫曼编码字符长度
+    优化了整体的传输字节
     """
-    pass
+
+    def __init__(self):
+        super(HuffmanTree, self).__init__()
+        del self.insert
+
+    def __repr__(self):
+        return """HuffmanTree("%s")""" % self.root
+
+    # TODO
+    # def from_data(self, wights2char: dict):
+    #     if not all(isinstance(value, (int, float)) for value in wights2char.keys()):
+    #         raise TypeError("Wight should be number.")
+    #     self.wight_map = wights2char
+    #     wights =
+    #     while wights:
+    #         h_node = HuffmanNode(None, None)
+    #         if len(wights) >= 2:
+    #             min_1, min_2 = wights.pop(0), wights.pop(0)
+    #             h_node.left = HuffmanNode(element=min_1, char=wights2char[min_1])
+    #             h_node.right = HuffmanNode(element=min_2, char=wights2char[min_2])
+    #         else:
 
 
 def max_depth(node=None):
@@ -437,7 +482,6 @@ if __name__ == "__main__":
 
     print("-" * 50)
     # 二叉搜索树
-    import random
 
     bst = BinarySortTree()
     # elements = set([random.randrange(1, 100) for i in range(8)])
