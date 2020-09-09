@@ -11,5 +11,7 @@ def check(func,*args):
 
 
 if __name__ == "__main__":
+    # test
     for i in range(3, 7):
         print(i, MonteCarloTimes(times=100000, dimension=i))
+
