@@ -110,7 +110,7 @@ def func_test(funcs, node=None):
 
 
 if __name__ == "__main__":
-    # 基础二叉树
+    # 基础二叉堆
     mbh = BinaryHeap()
     for i in range(15, 0, -1):
         # 逐层顺序插入
