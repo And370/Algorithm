@@ -155,7 +155,7 @@ class Solution:
 
 
 if __name__ == '__main__':
-    solve = Solution()
-    results = solve.solveNQueens(5)
+    solution = Solution()
+    results = solution.solveNQueens(5)
     for res in results:
         print(res)
