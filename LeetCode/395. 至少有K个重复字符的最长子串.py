@@ -37,6 +37,7 @@ s = "ababbc", k = 2
     c.若一个子串的discards字符集不存在时,即为满足条件的字符串,加入结果列表results;
     d.若一个子串的discards字符集不存在时,需要利用字符集的字符对当前子串进行split,切割的结果依然进行符合条件的判断,递归进入(c-d).
 * 这里容易犯的误区在于,不能在split时,直接选择切割后的最长子串,这样是剪枝条件错误,因为其未对剪枝的子串进行条件判断.
+? 每次split时取discards里最小/最大计数的字符,是否会有效率差异?
 3.动态规划 TODO
 此处考虑到切割字符串的效率较高,递归不会产生较深的递归栈,没有一定使用动态规划的必要.
 """
@@ -51,6 +52,7 @@ class Solution:
                 results.append(s)
             else:
                 print("to_check:", s)
+                # to_split =
                 for s_sub in s.split(discards.pop()):
                     if s_sub:
                         helper(results, s_sub, k)
