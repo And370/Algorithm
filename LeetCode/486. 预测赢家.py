@@ -17,6 +17,13 @@
 如果他选择 2（或者 1 ），那么玩家 2 可以从 1（或者 2 ）和 5 中进行选择。如果玩家 2 选择了 5 ，那么玩家 1 则只剩下 1（或者 2 ）可选。
 所以，玩家 1 的最终分数为 1 + 2 = 3，而玩家 2 为 5 。
 因此，玩家 1 永远不会成为赢家，返回 False 。
+ 
+
+提示：
+
+1 <= 给定的数组长度 <= 20.
+数组里所有分数都为非负数且不会大于 10000000 。
+如果最终两个玩家的分数相等，那么玩家 1 仍为赢家。
 
 来源：力扣（LeetCode）
 链接：https://leetcode-cn.com/problems/predict-the-winner
@@ -41,6 +48,8 @@ max_delta(a,b) = max_delta(max_delta(a,b),max_delta(a,b)) = ……
 以下max_delta简称为F
 当选择最上层(a,b)中较大的值,即为赢家.
 """
+
+
 class Solution(object):
     def PredictTheWinner(self, nums):
         """
@@ -63,6 +72,7 @@ class Solution(object):
 
         return max_delta(0, len(nums) - 1) >= 0
 
+
 """
 2.增加缓存
 考虑到无论最开始选择a还是b,其在求最优解的过程均会求解公共子数组的最优解,如:
@@ -77,6 +87,8 @@ F(F(1:2~6),F(1~5:6)) = F(F(左边被拆为 F(2:3~6),F(2~5:6) ), F(右边被拆�
 头和尾的取值区间均在[0,len(nums)]
 所以其为 len(nums) * len(nums) 的二维数组/矩阵cache.
 """
+
+
 class Solution(object):
     def PredictTheWinner(self, nums):
         """
@@ -108,13 +120,16 @@ class Solution(object):
 
         return max_delta(0, len(nums) - 1) >= 0
 
+
 """
 3.动态规划
 递归对于形为二位矩阵的缓存的填充顺序不清晰,且栈深大了存在溢出问题(Python栈深默认999,本题限定了数组长度,不会溢出).
 如果一开始就可以顺序地计算出矩阵中所有值,则一旦算出cache[0][len(nums)-1]的值,问题本身就解决了.
-这里首先对当矩阵出现唯一值的情况进行填充,即[i,i]均为单位长度的子数组值,如:[1].
+这里首先对当矩阵出现唯一值的情况进行填充,即[i,i]均为长度为1的子数组值,如:[3].
 之后对矩阵一端逐步扩展求值.
 """
+
+
 class Solution(object):
     def PredictTheWinner(self, nums):
         """
@@ -128,16 +143,21 @@ class Solution(object):
         for i in range(length):
             cache[i][i] = nums[i]
         i = length - 2
-        j = length - 1
-        while i > 0:
+        j = i + 1
+        while i >= 0:
             while j < length:
                 choose_left = nums[i] - cache[i + 1][j]
                 choose_right = nums[j] - cache[i][j - 1]
                 cache[i][j] = max(choose_left, choose_right)
+                # print(cache[i][j])
                 j += 1
             i -= 1
-        return
+            j = i + 1
+        # print(cache)
+        return cache[0][length - 1] >= 0
+
 
 if __name__ == '__main__':
     solution = Solution()
-    solution.PredictTheWinner([1, 2, 123, 879, 5, 6, 7, 8, 9, 777, 23, 123, 24, 2144])
+    result = solution.PredictTheWinner([1, 2, 123, 879, 5, 6, 7, 8, 9, 777, 23, 123, 24, 2144])
+    print(result)
