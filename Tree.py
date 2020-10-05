@@ -287,6 +287,8 @@ def layer_traversal_with_deep(node=None):
     :param node:
     :return:
     """
+    if not node:
+        return {}
     elements = {}
     queues = {1: [node]}
     layer = 1
