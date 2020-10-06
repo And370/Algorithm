@@ -89,18 +89,6 @@ class Solution:
         return pre
 
 
-#
-# class Solution:
-#     def generateParenthesis(self, n: int) -> list:
-#         result = ["()"]
-#
-#         for i in range(n):
-#             # 6-1-2
-#             result = [list(s) for s in set(result)]  # [["(",")"]]
-#             tmp = result * (len(result) + 1)  # [["()"],["()"]]
-#             # 逐空插入
-#             for j in range(len(tmp) + 1):
-#                 result = list(map(lambda x: x.insert(j, "()"), tmp[j]))
 if __name__ == '__main__':
     solution = Solution()
     n = 4
