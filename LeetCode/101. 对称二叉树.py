@@ -41,9 +41,13 @@
 除开根节点,所有层左半边等于右半边.
 所以需要每层有一个cache装当前层节点的val.
 
+迭代的方式需要保存每层节点,其会消耗大量内存和计算时间.
+
 2.递归
 将误区中的概念加以改造:
 并非子树对称,而应该是左子树的左子树与右子树的右子树对称,左子树的右子树和右子树的左子树对称.
+
+递归在此处在合适的判断条件下可以很快地提前终结节点的递归进程.
 """
 
 
@@ -64,6 +68,12 @@ class Solution:
             if len(pre) != 1:
                 pre_val = list(map(lambda x: x.val if x else None, pre))
                 # print(pre_val)
+                # 这种方法虽然不用遍历全部值,但是考虑到底层优化,此处循环比原生的切片效率低
+                # half = len(pre_val) // 2
+                # while half > 0:
+                #     if pre_val[half - 1] != pre_val[-half]:
+                #         return False
+                #     half -= 1
                 if pre_val[len(pre_val) // 2:] != pre_val[:len(pre_val) // 2][::-1]:
                     return False
             for node in pre:
