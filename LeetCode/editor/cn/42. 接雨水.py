@@ -18,43 +18,67 @@ TODO
 逐层取结果，效率不高
 """
 
+
+# 层序法
+# class Solution:
+#     def trap(self, height: List[int]) -> int:
+#         cache = {}
+#         h_max = 0
+#         if not height:
+#             return 0
+#         # 获得每层高度的索引
+#         for index, h in enumerate(height):
+#             if h in cache:
+#                 cache[h].append(index)
+#             else:
+#                 cache[h] = [index]
+#                 h_max = max(h_max, h)
+#         # print(cache)
+#         lower = h_max
+#         rains = 0
+#         min_left, max_right = len(height) - 1, 0
+#         while lower > 0:
+#             # 当无值时跳过该层
+#             if not cache.get(lower):
+#                 # print("not get:",lower)
+#                 rains += rain
+#             # 有值时
+#             else:
+#                 # 取当前层最大边界(包括更高层的)
+#                 min_left, max_right = min(min_left, cache[lower][0], cache[h_max][0]), \
+#                                       max(max_right, cache[lower][-1], cache[h_max][-1])
+#                 # print(min_left, max_right)
+#                 # 排除最高层层的情况，最高层无更高层，不需要取累加数量
+#                 if h_max != lower:
+#                     cache[lower] += cache[h_max]
+#                 rain = max_right - min_left + 1 - len(cache[lower])
+#                 # print("rain:", lower, rain)
+#                 rains += rain
+#                 h_max = lower
+#             # 逐渐放低
+#             lower -= 1
+#         return rains
+
+
 # leetcode submit region begin(Prohibit modification and deletion)
+# 缓存法
 class Solution:
     def trap(self, height: List[int]) -> int:
-        cache = {}
-        h_max = 0
         if not height:
             return 0
-        # 获得每层高度的索引
-        for index, h in enumerate(height):
-            if h in cache:
-                cache[h].append(index)
-            else:
-                cache[h] = [index]
-                h_max = max(h_max, h)
-        # print(cache)
-        lower = h_max
+        left_max = [height[0]]
+        right_max = [height[-1]]
+        for index in range(1, len(height)):
+            left_max.append(max(left_max[index - 1], height[index]))
+        for index in range(1, len(height)):
+            right_max.append(max(right_max[index - 1], height[-index - 1]))
+        right_max.reverse()
         rains = 0
-        min_left, max_right = len(height) - 1, 0
-        while lower > 0:
-            # 当无值时跳过该层
-            if not cache.get(lower):
-                # print("not get:",lower)
-                rains += rain
-            # 有值时
-            else:
-                # 取当前层最大边界(包括更高层的)
-                min_left, max_right = min(min_left, cache[lower][0], cache[h_max][0]), \
-                                      max(max_right, cache[lower][-1], cache[h_max][-1])
-                # print(min_left, max_right)
-                # 排除最高层层的情况，最高层无更高层，不需要取累加数量
-                if h_max != lower:
-                    cache[lower] += cache[h_max]
-                rain = max_right - min_left + 1 - len(cache[lower])
-                # print("rain:", lower, rain)
-                rains += rain
-                h_max = lower
-            # 逐渐放低
-            lower -= 1
+        for index in range(1, len(height) - 1):
+            if left_max[index - 1] and right_max[index + 1]:
+                min_level = min(left_max[index - 1], right_max[index + 1])
+                if min_level > height[index]:
+                    rains += min_level - height[index]
+            # print(height[index],rains)
         return rains
 # leetcode submit region end(Prohibit modification and deletion)
