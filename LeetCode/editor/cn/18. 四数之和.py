@@ -32,6 +32,12 @@ class Solution:
             return result
 
         nums.sort()
+        # TODO
+        # unduplicated = [0]
+        # for index, num in enumerate(nums):
+        #     if num == nums[unduplicated[-1]]:
+        #         continue
+        #     unduplicated.append(index)
 
         # 遍历每个元素
         for first in range(0, n - 3):
@@ -54,6 +60,7 @@ class Solution:
                         result.append([nums[first], nums[second], nums[left], nums[right]])
 
                         # 相同数跳过
+                        # TODO 此处存在重复计算
                         while left < right and nums[left] == nums[left + 1]:
                             left += 1
                         while left < right and nums[right] == nums[right - 1]:
