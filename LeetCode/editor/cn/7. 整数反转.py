@@ -39,27 +39,4 @@ class Solution:
         """
         Do not return anything, modify nums in-place instead.
         """
-        # # 1.切片法
-        # # 额外k空间
-        # k = k % len(nums)
-        # tmp = nums[-k:]
-        # nums[k:] = nums[:-k]
-        # nums[:k] = tmp
-
-        # 2.反转法
-        k = k % len(nums)
-        nums.reverse()
-        for index in range(k):
-            # print(index, nums)
-            if index < k - 1 - index:
-                nums[index], nums[k - 1 - index] = nums[k - 1 - index], nums[index]
-            else:
-                break
-        count = 0
-        for index in range(k, len(nums)):
-            if index < len(nums) - 1 - count:
-                nums[index], nums[len(nums) - 1 - count] = nums[len(nums) - 1 - count], nums[index]
-            else:
-                break
-            count += 1
 # leetcode submit region end(Prohibit modification and deletion)
