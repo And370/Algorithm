@@ -43,6 +43,10 @@ class Solution:
         # 锁定小列表,排序
         nums1, nums2 = (nums1, nums2) if len(nums1) < len(nums2) else (nums2, nums1)
         nums1.sort(), nums2.sort()
+        
+        # 无交集
+        if nums1[0] > nums2[-1] or nums1[-1] < nums2[0]:
+            return []
 
         # 结果容器与双指针
         result = []
