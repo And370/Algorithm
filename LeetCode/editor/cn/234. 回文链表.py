@@ -59,4 +59,7 @@ class Solution:
                 return False
             node = node.next
         return True
+
+        # 2.哈希累积法 TODO
+
 # leetcode submit region end(Prohibit modification and deletion)
