@@ -52,7 +52,14 @@
 
 """
 解:
-
+1.复杂的解法
+    差值积分
+    前后差值
+    环形修正可以使用索引%列长来做
+    最小值下一项即为起始点
+2.从数学上简化思路
+    差值积分
+    积分最小值下一项即为起始点
 """
 
 
@@ -69,62 +76,79 @@ class Solution:
 
         # 差值
         deltas = [g - c for g, c in zip(gas, cost)]
-
         n = len(deltas)
-
         i = 0
-        delta_acc = []
-        delta_acc_index = []
-        # 差值积分
-        # 分段为正向与负向积分
+
+        # # 1.复杂的解法
+        #
+        #
+        # delta_acc = []
+        # delta_acc_index = []
+        # # 差值积分
+        # # 分段为正向与负向积分
+        # while i < n:
+        #     delta_acc_index.append(i)
+        #     is_same = deltas[i] >= 0
+        #     delta_concat = deltas[i]
+        #
+        #     i += 1
+        #     while i < n and (deltas[i] >= 0) == is_same:
+        #         delta_concat += deltas[i]
+        #         i += 1
+        #     delta_acc.append(delta_concat)
+        #     # print(i)
+        #
+        # # 交错列的环形纠正
+        # # 首项必为正
+        # if (delta_acc[0] > 0) == (delta_acc[-1] > 0):
+        #     delta_acc[0] += delta_acc.pop()
+        #     delta_acc_index = [delta_acc_index[-1]] + delta_acc_index[1:-1]
+        #
+        # # 此处若细究,则需拆写,切片是O(n)复杂度
+        # if delta_acc[0] < 0:
+        #     delta_acc = delta_acc[1:] + [delta_acc[0]]
+        #     delta_acc_index = delta_acc_index[1:] + [delta_acc_index[0]]
+        #
+        # # 前后的交错集合
+        # delta_pre_next = []
+        # delta_pre_next_index = delta_acc_index[::2]
+        # i = 0
+        # n = len(delta_acc)
+        # while i < n - 1:
+        #     delta_pre_next.append(delta_acc[i] + delta_acc[i + 1])
+        #     i += 2
+        # # print("deltas", deltas)
+        # # print("delta_acc", delta_acc)
+        # # print("delta_pre_next", delta_pre_next)
+        # # print("delta_pre_next_index", delta_pre_next_index)
+        #
+        # # 剩余单项的情况
+        # if len(delta_pre_next_index) == 1:
+        #     return delta_pre_next_index[0]
+        # # 索引最小负值
+        # res = delta_pre_next.index(min(delta_pre_next))
+        # # print(res)
+        #
+        # # 最小负值的下一项即一定为起始点
+        # # 此处做环形纠正
+        # if res == len(delta_pre_next) - 1:
+        #     res = 0
+        # else:
+        #     res += 1
+        # return delta_pre_next_index[res]
+        
+        # 2.从数学上简化思路
+        acc = deltas[0]
+        acc_min = deltas[0]
+        acc_min_index = 0
+        i += 1
+        # 获得差值积分最小值
         while i < n:
-            delta_acc_index.append(i)
-            is_same = deltas[i] >= 0
-            delta_concat = deltas[i]
-
+            acc += deltas[i]
+            if acc_min > acc:
+                acc_min = acc
+                acc_min_index = i
             i += 1
-            while i < n and (deltas[i] >= 0) == is_same:
-                delta_concat += deltas[i]
-                i += 1
-            delta_acc.append(delta_concat)
-            # print(i)
-
-        # 交错列的环形纠正
-        # 首项必为正
-        if (delta_acc[0] > 0) == (delta_acc[-1] > 0):
-            delta_acc[0] += delta_acc.pop()
-            delta_acc_index = [delta_acc_index[-1]] + delta_acc_index[1:-1]
-
-        # 此处若细究,则需拆写,切片是O(n)复杂度
-        if delta_acc[0] < 0:
-            delta_acc = delta_acc[1:] + [delta_acc[0]]
-            delta_acc_index = delta_acc_index[1:] + [delta_acc_index[0]]
-
-        # 前后的交错集合
-        delta_pre_next = []
-        delta_pre_next_index = delta_acc_index[::2]
-        i = 0
-        n = len(delta_acc)
-        while i < n - 1:
-            delta_pre_next.append(delta_acc[i] + delta_acc[i + 1])
-            i += 2
-        # print("deltas", deltas)
-        # print("delta_acc", delta_acc)
-        # print("delta_pre_next", delta_pre_next)
-        # print("delta_pre_next_index", delta_pre_next_index)
-
-        # 剩余单项的情况
-        if len(delta_pre_next_index) == 1:
-            return delta_pre_next_index[0]
-        # 索引最小负值
-        res = delta_pre_next.index(min(delta_pre_next))
-        # print(res)
-
-        # 最小负值的下一项即一定为起始点
-        # 此处做环形纠正
-        if res == len(delta_pre_next) - 1:
-            res = 0
-        else:
-            res += 1
-        return delta_pre_next_index[res]
+        # 环形修正使用余数
+        return (acc_min_index + 1) % n
 # leetcode submit region end(Prohibit modification and deletion)
