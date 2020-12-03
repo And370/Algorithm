@@ -24,25 +24,45 @@
 
 """
 解:
-
+1.质数哈希函数
+    利用26位质数,构建哈希函数,此函数结果取决于元素含量,而与元素顺序无关
+    每个字母组成一致的word其哈希值一致
+2.利用Python现成的字典结合元组(元祖为不可变对象所以可直接序列化)
+    将每个word的字幕占位表统一序列化
 """
+
+
 # leetcode submit region begin(Prohibit modification and deletion)
 class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
-        def hash_prime(word):
-            primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
-                      101]
-            hash_value = 1
-            for char in word:
-                hash_value = hash_value * primes[ord(char) - ord("a")]
-            return hash_value
+        # # 1.质数哈希函数
+        # def hash_prime(word):
+        #     primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
+        #               101]
+        #     hash_value = 1
+        #     for char in word:
+        #         hash_value = hash_value * primes[ord(char) - ord("a")]
+        #     return hash_value
+        #
+        # results = {}
+        # for word in strs:
+        #     result = hash_prime(word)
+        #     if results.get(result):
+        #         results[result].append(word)
+        #     else:
+        #         results[result] = [word]
+        # return list(results.values())
 
-        results = {}
+        # 2.元祖字典
+        cache = {}
         for word in strs:
-            result = hash_prime(word)
-            if results.get(result):
-                results[result].append(word)
+            count = [0] * 26
+            for char in word:
+                count[ord(char) - ord('a')] += 1
+            if tuple(count) in cache:
+                cache[tuple(count)].append(word)
             else:
-                results[result] = [word]
-        return list(results.values())
+                cache[tuple(count)] = [word]
+        return list(cache.values())
+
 # leetcode submit region end(Prohibit modification and deletion)
