@@ -58,7 +58,7 @@ class Solution:
         result = 1
         for i in range(n):
             result = result * m / n
-            print(m, n)
+            # print(m, n)
             m -= 1
             n -= 1
 
