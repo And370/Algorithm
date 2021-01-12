@@ -79,6 +79,7 @@ class Solution:
                     node.next = None
                 else:
                     node.next = queue[index + 1]
+                # 此处为完美二叉树,则仅需要一个节点来判断是否叶子节点
                 if node.left:
                     queue_next += [node.left, node.right]
 
