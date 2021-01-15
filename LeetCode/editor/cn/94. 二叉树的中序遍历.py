@@ -101,6 +101,8 @@ class Solution:
                 node = stack.pop()
                 results.append(node.val)
             else:
+                # 注意要维持stack中所有节点的可用性
+                # stack中有且仅有可用节点与None作为已处理标记
                 if node.right:
                     stack.append(node.right)
 
