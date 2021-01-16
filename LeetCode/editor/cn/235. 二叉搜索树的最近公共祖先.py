@@ -53,22 +53,60 @@
 
 class Solution:
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
-        if not root:
-            return root
 
-        p, q = p.val, q.val
-        ancestor = root
+        # # 1.剪枝法
+        # if not root:
+        #     return root
+        #
+        # p, q = p.val, q.val
+        # ancestor = root
+        #
+        # # 当前点一直在所需两点的一侧时
+        # # 可直接向一侧下钻,预剪枝
+        # while True:
+        #     if ancestor.val > p and ancestor.val > q:
+        #         ancestor = ancestor.left
+        #     elif ancestor.val < p and ancestor.val < q:
+        #         ancestor = ancestor.right
+        #     else:
+        #         break
+        #
+        # return ancestor
 
-        # 当前点一直在所需两点的一侧时
-        # 可直接向一侧下钻,预剪枝
-        while True:
-            if ancestor.val > p and ancestor.val > q:
-                ancestor = ancestor.left
-            elif ancestor.val < p and ancestor.val < q:
-                ancestor = ancestor.right
+        # 2.共同路径法
+
+        p_path = []
+        q_path = []
+
+        to_p = root
+        to_q = root
+
+        p,q = p.val,q.val
+
+        while to_p != p:
+            p_path.append(to_p)
+            if to_p.val > p:
+                to_p = to_p.left
+            elif to_p.val < p:
+                to_p = to_p.right
+            else:
+                break
+
+        while to_q != q:
+            q_path.append(to_q)
+            if to_q.val > q:
+                to_q = to_q.left
+            elif to_q.val < q:
+                to_q = to_q.right
+            else:
+                break
+
+        ancestor = None
+        for to_p,to_q in zip(p_path,q_path):
+            if to_p == to_q:
+                ancestor = to_p
             else:
                 break
 
         return ancestor
-
 # leetcode submit region end(Prohibit modification and deletion)
