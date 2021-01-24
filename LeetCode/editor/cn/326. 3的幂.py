@@ -62,14 +62,17 @@
 # leetcode submit region begin(Prohibit modification and deletion)
 class Solution:
     def isPowerOfThree(self, n: int) -> bool:
-        # 1.逐步除3直至可为1则为3的幂
-        # 2.除3有余则非3的幂
-        # TODO 计算数值范围内最大的3的幂m,以m对n求余,若有余则非
-        while n >= 1:
-            if n == 1:
-                return True
-            if n % 3:
-                return False
-            n = n / 3
-        return False
+        # # 1.逐步除3直至可为1则为3的幂
+        # # 2.除3有余则非3的幂
+        # while n >= 1:
+        #     if n == 1:
+        #         return True
+        #     if n % 3:
+        #         return False
+        #     n = n / 3
+        # return False
+
+        # 3.计算数值范围内最大的3的幂m,以m对n求余,若有余则非
+        return (n > 0) and not bool(1162261467 % n)
+
 # leetcode submit region end(Prohibit modification and deletion)
